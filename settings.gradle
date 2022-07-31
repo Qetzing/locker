@@ -1,0 +1,3 @@
+rootProject.name = 'locker'
+include 'locker-api'
+include 'locker'

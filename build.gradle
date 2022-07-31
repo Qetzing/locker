@@ -1,0 +1,8 @@
+group 'qetz.locker'
+
+ext {
+  guiceVersion = '5.1.0'
+  lombokVersion = '1.18.24'
+
+  jupiterVersion = '5.8.2'
+}
