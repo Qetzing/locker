@@ -1,14 +1,15 @@
-package qetz.locker;
+package qetz.locker.component;
 
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-
-import java.util.UUID;
+import org.bukkit.entity.Player;
+import qetz.locker.Look;
+import qetz.locker.Outfit;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SingleLook extends Look {
-  public static SingleLook withOutfit(Outfit outfit) {
+  public static Look withOutfit(Outfit outfit) {
     Preconditions.checkNotNull(outfit, "outfit");
     return new SingleLook(outfit);
   }
@@ -16,7 +17,7 @@ public final class SingleLook extends Look {
   private final Outfit outfit;
 
   @Override
-  Outfit chooseOutfit(UUID receiver) {
+  public Outfit chooseOutfit(Player receiver) {
     return outfit;
   }
 }

@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static com.comphenix.protocol.PacketType.Play.Server.*;
 
@@ -41,22 +40,22 @@ public final class LookApplyListener extends PacketAdapter {
     if (sending.getPacketType().equals(PLAYER_INFO)) {
       sending.setPacket(applyLook(
         sending.getPacket().shallowClone(),
-        sending.getPlayer().getUniqueId()
+        sending.getPlayer()
       ));
     } else if (sending.getPacketType().equals(NAMED_ENTITY_SPAWN)) {
       sending.setPacket(reviseSpawnPacket(
         sending.getPacket().shallowClone(),
-        sending.getPlayer().getUniqueId()
+        sending.getPlayer()
       ));
     } else if (sending.getPacketType().equals(SCOREBOARD_TEAM)) {
       sending.setPacket(adjustScoreboardTeam(
         sending.getPacket().shallowClone(),
-        sending.getPlayer().getUniqueId()
+        sending.getPlayer()
       ));
     }
   }
 
-  private PacketContainer applyLook(PacketContainer packet, UUID receiver) {
+  private PacketContainer applyLook(PacketContainer packet, Player receiver) {
     var wrapper = WrappedPlayServerPlayerInfo.withPacket(packet);
     var edited = wrapper.data().stream()
       .map(original -> createPlayerData(original, receiver))
@@ -65,7 +64,7 @@ public final class LookApplyListener extends PacketAdapter {
     return wrapper.handle();
   }
 
-  private PlayerInfoData createPlayerData(PlayerInfoData original, UUID receiver) {
+  private PlayerInfoData createPlayerData(PlayerInfoData original, Player receiver) {
     var look = locker.findOrCreateByOriginal(
       Outfit.fromGameProfile(original.getProfile())
     );
@@ -83,7 +82,7 @@ public final class LookApplyListener extends PacketAdapter {
 
   private PacketContainer reviseSpawnPacket(
     PacketContainer packet,
-    UUID receiver
+    Player receiver
   ) {
     var wrapper = WrappedPlayServerSpawnNamedEntity.withPacket(packet);
     var look = locker.findById(wrapper.id()).orElseThrow();
@@ -96,7 +95,7 @@ public final class LookApplyListener extends PacketAdapter {
 
   private PacketContainer adjustScoreboardTeam(
     PacketContainer packet,
-    UUID receiver
+    Player receiver
   ) {
     var wrapper = WrappedPlayServerScoreboardTeam.withPacket(packet);
     if (updateModes.contains(wrapper.mode())) {
@@ -107,7 +106,7 @@ public final class LookApplyListener extends PacketAdapter {
 
   private Collection<String> reviseTeamPlayers(
     Collection<String> original,
-    UUID receiver
+    Player receiver
   ) {
     Collection<String> edited = Lists.newArrayList();
     for (var name : original) {

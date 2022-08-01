@@ -72,6 +72,7 @@ public final class Outfit {
     }
   }
 
+  @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
   public static final class Builder {
     private String name;
     private Skin skin;

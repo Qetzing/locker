@@ -9,7 +9,11 @@ repositories {
 }
 
 dependencies {
+  compileOnly project(':locker-api')
+
   registerMinecraftDependencies(it)
+
+  compileOnly "com.google.inject:guice:$guiceVersion"
 
   registerLombokDependencies(it)
 }

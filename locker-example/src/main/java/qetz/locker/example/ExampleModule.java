@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.Plugin;
 import qetz.locker.Locker;
-import qetz.locker.LockerProvider;
+import qetz.locker.component.LockerProvider;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExampleModule extends AbstractModule {

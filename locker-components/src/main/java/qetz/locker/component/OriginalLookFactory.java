@@ -1,11 +1,10 @@
-package qetz.locker.example;
+package qetz.locker.component;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import qetz.locker.Look;
 import qetz.locker.LookFactory;
 import qetz.locker.Outfit;
-import qetz.locker.SingleLook;
 
 import javax.inject.Inject;
 

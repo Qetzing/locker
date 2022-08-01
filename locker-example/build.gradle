@@ -6,6 +6,8 @@ plugins {
 version '1.0.0'
 
 dependencies {
+  implementation project(':locker-components')
+
   compileOnly project(':locker-api')
   compileOnly project(':locker')
 

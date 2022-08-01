@@ -1,7 +1,7 @@
 package qetz.locker;
 
-import java.util.UUID;
+import org.bukkit.entity.Player;
 
 public abstract class Look {
-  abstract Outfit chooseOutfit(UUID receiver);
+  public abstract Outfit chooseOutfit(Player receiver);
 }

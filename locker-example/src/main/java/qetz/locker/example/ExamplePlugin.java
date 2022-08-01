@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.bukkit.plugin.java.JavaPlugin;
 import qetz.locker.Locker;
+import qetz.locker.component.OriginalLookFactory;
 
 public final class ExamplePlugin extends JavaPlugin {
   private Injector injector;
