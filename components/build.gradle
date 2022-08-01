@@ -1,5 +1,6 @@
 plugins {
   id 'java'
+  id 'maven-publish'
 }
 
 version '1.0.0'
@@ -16,4 +17,30 @@ dependencies {
   compileOnly "com.google.inject:guice:$guiceVersion"
 
   registerLombokDependencies(it)
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      groupId = 'qetz.locker'
+      artifactId = 'components'
+
+      from(components.java)
+    }
+  }
+  repositories {
+    maven {
+      url 'https://repo.qetz.de/artifactory/repo-public'
+      metadataSources {
+        mavenPom()
+        gradleMetadata()
+        artifact()
+      }
+
+      credentials {
+        username = System.getenv('qetzUser')
+        password = System.getenv('qetzPassword')
+      }
+    }
+  }
 }
