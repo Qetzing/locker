@@ -1,7 +1,10 @@
 package qetz.locker;
 
+import java.util.UUID;
+
 public interface Locker {
   void registerFactory(LookFactory factory);
 
-  void changeLook(Look look);
+  Look findOrCreateById(UUID id);
+  void changeLook(UUID id, Look look);
 }
