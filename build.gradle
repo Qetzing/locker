@@ -1,6 +1,9 @@
 group 'qetz.locker'
 
 ext {
+  paperVersion = '1.16.5-R0.1-SNAPSHOT'
+  protocolLibVersion = '4.8.0'
+
   guiceVersion = '5.1.0'
   lombokVersion = '1.18.24'
 
