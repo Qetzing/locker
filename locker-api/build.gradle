@@ -9,4 +9,9 @@ repositories {
 }
 
 dependencies {
+  registerMinecraftDependencies(it)
+
+  compileOnly "com.google.inject:guice:$guiceVersion"
+
+  registerLombokDependencies(it)
 }

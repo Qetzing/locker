@@ -1,0 +1,6 @@
+main: qetz.locker.LockerPlugin
+name: Locker
+version: 1.0.0
+api-version: 1.16
+author: Qetz
+depend: [ProtocolLib]

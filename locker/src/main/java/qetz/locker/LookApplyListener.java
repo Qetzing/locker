@@ -5,8 +5,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +22,7 @@ import java.util.UUID;
 import static com.comphenix.protocol.PacketType.Play.Server.*;
 
 public final class LookApplyListener extends PacketAdapter {
-  private final Locker locker;
+  private final PaperLocker locker;
 
   private static final Set<PacketType> listeningPackets = Set.of(
     PLAYER_INFO,
@@ -33,7 +31,7 @@ public final class LookApplyListener extends PacketAdapter {
   );
 
   @Inject
-  private LookApplyListener(Locker locker, Plugin plugin) {
+  private LookApplyListener(PaperLocker locker, Plugin plugin) {
     super(plugin, listeningPackets);
     this.locker = locker;
   }
@@ -68,11 +66,13 @@ public final class LookApplyListener extends PacketAdapter {
   }
 
   private PlayerInfoData createPlayerData(PlayerInfoData original, UUID receiver) {
-    var look = locker.findOrCreateById(original.getProfile().getUUID());
+    var look = locker.findOrCreateByOriginal(
+      Outfit.fromGameProfile(original.getProfile())
+    );
     var outfit = look.chooseOutfit(receiver);
 
     return new PlayerInfoData(
-      createGameProfile(outfit),
+      outfit.toGameProfile(),
       original.getLatency(),
       original.getGameMode(),
       original.getDisplayName()
@@ -81,26 +81,12 @@ public final class LookApplyListener extends PacketAdapter {
 
   private static final String skinKey = "textures";
 
-  private WrappedGameProfile createGameProfile(Outfit outfit) {
-    var profile = new WrappedGameProfile(outfit.id(), outfit.name());
-    var properties = profile.getProperties();
-    properties.put(
-      skinKey,
-      WrappedSignedProperty.fromValues(
-        skinKey,
-        outfit.skin().value(),
-        outfit.skin().signature()
-      )
-    );
-    return profile;
-  }
-
   private PacketContainer reviseSpawnPacket(
     PacketContainer packet,
     UUID receiver
   ) {
     var wrapper = WrappedPlayServerSpawnNamedEntity.withPacket(packet);
-    var look = locker.findOrCreateById(wrapper.id());
+    var look = locker.findById(wrapper.id()).orElseThrow();
     var outfit = look.chooseOutfit(receiver);
     wrapper.setId(outfit.id());
     return wrapper.handle();
@@ -127,7 +113,8 @@ public final class LookApplyListener extends PacketAdapter {
     for (var name : original) {
       var edit = findPlayerByName(name)
         .map(player -> locker
-          .findOrCreateById(player.getUniqueId())
+          .findById(player.getUniqueId())
+          .orElseThrow()
           .chooseOutfit(receiver)
           .name()
         )

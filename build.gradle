@@ -1,4 +1,17 @@
+//file:noinspection GrMethodMayBeStatic
 group 'qetz.locker'
+
+allprojects {
+  repositories {
+    mavenCentral()
+    maven {
+      url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+      url = 'https://repo.dmulloy2.net/repository/public/'
+    }
+  }
+}
 
 ext {
   paperVersion = '1.16.5-R0.1-SNAPSHOT'
@@ -8,4 +21,18 @@ ext {
   lombokVersion = '1.18.24'
 
   jupiterVersion = '5.8.2'
+}
+
+def registerMinecraftDependencies(dependencies) {
+  //noinspection VulnerableLibrariesLocal
+  dependencies.compileOnly "com.destroystokyo.paper:paper-api:${paperVersion}"
+  dependencies.compileOnly "com.comphenix.protocol:ProtocolLib:${protocolLibVersion}"
+}
+
+def registerLombokDependencies(dependencies) {
+  dependencies.compileOnly "org.projectlombok:lombok:$lombokVersion"
+  dependencies.annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+  dependencies.testCompileOnly  "org.projectlombok:lombok:$lombokVersion"
+  dependencies.testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PaperLocker implements Locker {
-  public static Locker create() {
+  static PaperLocker create() {
     return new PaperLocker(Maps.newHashMap());
   }
 
@@ -34,10 +34,17 @@ public final class PaperLocker implements Locker {
     return factory;
   }
 
-  public void add(UUID id, Look look) {
-    Preconditions.checkNotNull(id, "id");
-    Preconditions.checkNotNull(look, "look");
-    looks.put(id, look);
+  public Look findOrCreateByOriginal(Outfit original) {
+    Preconditions.checkNotNull(original, "original");
+    return findById(original.id())
+      .orElse(createByOriginal(original));
+  }
+
+  public Look createByOriginal(Outfit original) {
+    Preconditions.checkNotNull(original, "original");
+    var look = factory().create(original);
+    looks.put(original.id(), look);
+    return look;
   }
 
   public void remove(UUID id) {
@@ -46,10 +53,9 @@ public final class PaperLocker implements Locker {
   }
 
   @Override
-  public Look findOrCreateById(UUID id) {
+  public Optional<Look> findById(UUID id) {
     Preconditions.checkNotNull(id, "id");
-    return Optional.ofNullable(looks.get(id))
-      .orElse(factory().create(id));
+    return Optional.ofNullable(looks.get(id));
   }
 
   @Override

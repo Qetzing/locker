@@ -1,33 +1,18 @@
 plugins {
+  id 'com.github.johnrengelman.shadow' version '7.1.2'
   id 'java'
 }
 
 version '1.0.0'
 
-repositories {
-  mavenCentral()
-  maven {
-    url = 'https://repo.papermc.io/repository/maven-public/'
-  }
-  maven {
-    url = 'https://repo.dmulloy2.net/repository/public/'
-  }
-}
-
 dependencies {
   implementation project(':locker-api')
 
-  //noinspection VulnerableLibrariesLocal
-  compileOnly "com.destroystokyo.paper:paper-api:${paperVersion}"
-  compileOnly "com.comphenix.protocol:ProtocolLib:${protocolLibVersion}"
+  registerMinecraftDependencies(it)
 
   implementation "com.google.inject:guice:$guiceVersion"
 
-  compileOnly "org.projectlombok:lombok:$lombokVersion"
-  annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-
-  testCompileOnly  "org.projectlombok:lombok:$lombokVersion"
-  testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+  registerLombokDependencies(it)
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiterVersion"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
