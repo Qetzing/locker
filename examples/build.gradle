@@ -6,10 +6,10 @@ plugins {
 version '1.0.0'
 
 dependencies {
-  implementation project(':locker-components')
+  implementation project(':components')
 
-  compileOnly project(':locker-api')
-  compileOnly project(':locker')
+  compileOnly project(':api')
+  compileOnly project(':core')
 
   registerMinecraftDependencies(it)
 

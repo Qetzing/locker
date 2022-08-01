@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-  compileOnly project(':locker-api')
+  compileOnly project(':api')
 
   registerMinecraftDependencies(it)
 

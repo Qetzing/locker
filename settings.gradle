@@ -1,6 +1,6 @@
 rootProject.name = 'locker'
-include 'locker-api'
-include 'locker'
-include 'locker-example'
-include 'locker-components'
+include 'api'
+include 'core'
+include 'examples'
+include 'components'
 
