@@ -27,6 +27,13 @@ public final class PaperLocker implements Locker {
     this.factory = factory;
   }
 
+  private LookFactory factory() {
+    if (factory == null) {
+      throw new IllegalStateException("can not create look without registered factory");
+    }
+    return factory;
+  }
+
   public void add(UUID id, Look look) {
     Preconditions.checkNotNull(id, "id");
     Preconditions.checkNotNull(look, "look");
@@ -38,13 +45,17 @@ public final class PaperLocker implements Locker {
     looks.remove(id);
   }
 
-  public Optional<Look> findById(UUID id) {
+  @Override
+  public Look findOrCreateById(UUID id) {
     Preconditions.checkNotNull(id, "id");
-    return Optional.ofNullable(looks.get(id));
+    return Optional.ofNullable(looks.get(id))
+      .orElse(factory().create(id));
   }
 
   @Override
-  public void changeLook(Look look) {
-    throw new UnsupportedOperationException();
+  public void changeLook(UUID id, Look look) {
+    Preconditions.checkNotNull(id, "id");
+    Preconditions.checkNotNull(look, "look");
+    looks.put(id, look);
   }
 }
