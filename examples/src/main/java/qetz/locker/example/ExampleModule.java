@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.Plugin;
 import qetz.locker.Locker;
 import qetz.locker.component.LockerProvider;
+import qetz.locker.example.nick.NickModule;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExampleModule extends AbstractModule {
@@ -19,6 +20,8 @@ public final class ExampleModule extends AbstractModule {
 
   @Override
   protected void configure() {
+    install(NickModule.create());
+
     bind(Plugin.class).toInstance(plugin);
     bind(Locker.class).toProvider(LockerProvider.create());
   }

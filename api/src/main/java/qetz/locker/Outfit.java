@@ -5,6 +5,7 @@ import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -40,6 +41,18 @@ public final class Outfit {
       )
     );
     return profile;
+  }
+
+  public static Outfit originalOutfit(Player player) {
+    var property = player.getPlayerProfile().getProperties().stream()
+      .filter(current -> current.getName().equals(skinKey))
+      .findFirst()
+      .orElseThrow();
+    return new Outfit(
+      player.getName(),
+      Skin.with(property.getValue(), property.getSignature()),
+      player.getUniqueId()
+    );
   }
 
   public static Outfit fromGameProfile(WrappedGameProfile profile) {

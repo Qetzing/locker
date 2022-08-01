@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 import java.util.Optional;
@@ -11,11 +13,13 @@ import java.util.UUID;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PaperLocker implements Locker {
-  static PaperLocker create() {
-    return new PaperLocker(Maps.newHashMap());
+  static PaperLocker withPlugin(Plugin plugin) {
+    Preconditions.checkNotNull(plugin, "plugin");
+    return new PaperLocker(Maps.newHashMap(), plugin);
   }
 
   private final Map<UUID, Look> looks;
+  private final Plugin plugin;
 
   private LookFactory factory;
 
@@ -58,10 +62,21 @@ public final class PaperLocker implements Locker {
     return Optional.ofNullable(looks.get(id));
   }
 
+  @SuppressWarnings("ConstantConditions")
   @Override
   public void changeLook(UUID id, Look look) {
     Preconditions.checkNotNull(id, "id");
     Preconditions.checkNotNull(look, "look");
+    if (!looks.containsKey(id)) {
+      return;
+    }
+    var target = Bukkit.getPlayer(id);
+    for (var player : Bukkit.getOnlinePlayers()) {
+      player.hidePlayer(plugin, target);
+    }
     looks.put(id, look);
+    for (var player : Bukkit.getOnlinePlayers()) {
+      player.showPlayer(plugin, target);
+    }
   }
 }

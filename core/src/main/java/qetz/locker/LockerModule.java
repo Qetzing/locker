@@ -17,7 +17,7 @@ public final class LockerModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(PaperLocker.class).toInstance(PaperLocker.create());
+    bind(PaperLocker.class).toInstance(PaperLocker.withPlugin(plugin));
     bind(Plugin.class).toInstance(plugin);
   }
 }
