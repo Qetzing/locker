@@ -37,7 +37,7 @@ public final class PaperLocker implements Locker {
   public Look findOrCreateByOriginal(Outfit original) {
     Preconditions.checkNotNull(original, "original");
     return findById(original.id())
-      .orElse(createByOriginal(original));
+      .orElseGet(() -> createByOriginal(original));
   }
 
   public Look createByOriginal(Outfit original) {
