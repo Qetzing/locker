@@ -42,7 +42,7 @@ public final class Outfit {
     }
   }
 
-  private static final class Builder {
+  public static final class Builder {
     private String name;
     private Skin skin;
     private UUID id;
