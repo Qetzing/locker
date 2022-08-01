@@ -1,0 +1,21 @@
+plugins {
+  id 'com.github.johnrengelman.shadow' version '7.1.2'
+  id 'java'
+}
+
+version '1.0.0'
+
+dependencies {
+  compileOnly project(':locker-api')
+  compileOnly project(':locker')
+
+  registerMinecraftDependencies(it)
+
+  implementation "com.google.inject:guice:$guiceVersion"
+
+  registerLombokDependencies(it)
+}
+
+shadowJar {
+  configurations = [project.configurations.runtimeClasspath]
+}

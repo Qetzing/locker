@@ -1,3 +1,4 @@
 rootProject.name = 'locker'
 include 'locker-api'
 include 'locker'
+include 'locker-example'
