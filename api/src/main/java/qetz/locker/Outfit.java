@@ -4,33 +4,32 @@ import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Accessors(fluent = true)
+@Getter
 public final class Outfit {
-  private final String name;
+  private final DisplayName displayName;
   private final Skin skin;
   private final UUID id;
 
   public String name() {
-    return name;
-  }
-
-  public Skin skin() {
-    return skin;
-  }
-
-  public UUID id() {
-    return id;
+    return displayName.name();
   }
 
   private static final String skinKey = "textures";
 
   public WrappedGameProfile toGameProfile() {
-    var profile = new WrappedGameProfile(id, name);
+    var profile = new WrappedGameProfile(id, displayName.name());
     var properties = profile.getProperties();
     properties.put(
       skinKey,
@@ -44,28 +43,13 @@ public final class Outfit {
   }
 
   public static Outfit originalOutfit(Player player) {
-    var property = player.getPlayerProfile().getProperties().stream()
-      .filter(current -> current.getName().equals(skinKey))
-      .findFirst()
-      .orElseThrow();
-    return new Outfit(
-      player.getName(),
-      Skin.with(property.getValue(), property.getSignature()),
-      player.getUniqueId()
-    );
+    Preconditions.checkNotNull(player, "player");
+    return newBuilder().originalFromPlayer(player).create();
   }
 
   public static Outfit fromGameProfile(WrappedGameProfile profile) {
     Preconditions.checkNotNull(profile, "profile");
-    return new Outfit(
-      profile.getName(),
-      Skin.fromProperty(profile.getProperties().get("textures").stream()
-        .filter(property -> property.getName().equals(skinKey))
-        .findFirst()
-        .orElseThrow()
-      ),
-      profile.getUUID()
-    );
+    return newBuilder().fromGameProfile(profile).create();
   }
 
   public static Builder newBuilder() {
@@ -85,15 +69,56 @@ public final class Outfit {
     }
   }
 
+  @lombok.Builder(builderMethodName = "newBuilder", setterPrefix = "with")
+  public record DisplayName(
+    @NonNull String name,
+    @Nullable String prefix,
+    @Nullable String suffix,
+    @Nullable ChatColor color
+  ) {
+    public static DisplayName emptyWithName(String name) {
+      Preconditions.checkNotNull(name, "name");
+      return new DisplayName(name, null, null, null);
+    }
+  }
+
   @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
   public static final class Builder {
-    private String name;
+    private DisplayName displayName;
     private Skin skin;
     private UUID id;
 
-    public Builder withName(String name) {
-      this.name = name;
+    public Builder originalFromPlayer(Player player) {
+      Preconditions.checkNotNull(player, "player");
+      var property = player.getPlayerProfile().getProperties().stream()
+        .filter(current -> current.getName().equals(skinKey))
+        .findFirst()
+        .orElseThrow();
+      return withSkin(Skin.with(property.getValue(), property.getSignature()))
+        .withId(player.getUniqueId())
+        .withName(player.getName());
+    }
+
+    public Builder fromGameProfile(WrappedGameProfile profile) {
+      Preconditions.checkNotNull(profile, "profile");
+      return withSkin(Skin.fromProperty(profile.getProperties().get("textures")
+        .stream()
+        .filter(property -> property.getName().equals(skinKey))
+        .findFirst()
+        .orElseThrow()
+      ))
+        .withName(profile.getName())
+        .withId(profile.getUUID());
+    }
+
+    public Builder withDisplayName(DisplayName displayName) {
+      this.displayName = displayName;
       return this;
+    }
+
+    public Builder withName(String name) {
+      Preconditions.checkNotNull(name, "name");
+      return withDisplayName(DisplayName.emptyWithName(name));
     }
 
     public Builder withSkin(Skin skin) {
@@ -107,10 +132,10 @@ public final class Outfit {
     }
 
     public Outfit create() {
-      Preconditions.checkNotNull(name, "name");
+      Preconditions.checkNotNull(displayName, "displayName");
       Preconditions.checkNotNull(skin, "skin");
       Preconditions.checkNotNull(id, "id");
-      return new Outfit(name, skin, id);
+      return new Outfit(displayName, skin, id);
     }
   }
 }
