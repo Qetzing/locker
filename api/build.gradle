@@ -27,11 +27,6 @@ publishing {
   repositories {
     maven {
       url 'https://repo.qetz.de/artifactory/repo-public'
-      metadataSources {
-        mavenPom()
-        gradleMetadata()
-        artifact()
-      }
 
       credentials {
         username = System.getenv('qetzUser')

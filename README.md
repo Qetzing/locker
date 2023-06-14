@@ -48,11 +48,6 @@ you must first add following repository to your build file:
 ```groovy
 maven {
   url 'https://repo.qetz.de/artifactory/repo-public'
-  metadataSources {
-    mavenPom()
-    gradleMetadata()
-    artifact()
-  }
 }
 ```
 
