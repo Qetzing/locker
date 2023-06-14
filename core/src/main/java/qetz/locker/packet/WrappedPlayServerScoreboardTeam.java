@@ -2,7 +2,6 @@ package qetz.locker.packet;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.reflect.IntEnum;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.google.common.base.Preconditions;
@@ -137,11 +136,20 @@ public final class WrappedPlayServerScoreboardTeam extends AbstractPacket {
     handle().getSpecificModifier(Collection.class).write(0, players);
   }
 
-  private static class Mode extends IntEnum {
-    private static final int TEAM_CREATED = 0;
-    private static final int TEAM_REMOVED = 1;
-    private static final int TEAM_UPDATED = 2;
-    private static final int PLAYERS_ADDED = 3;
-    private static final int PLAYERS_REMOVED = 4;
+  public enum Mode {
+    TeamCreated,
+    TeamRemoved,
+    TeamUpdated,
+    PlayersAdded,
+    PlayersRemoved;
+
+    public static Mode fromId(int id) {
+      Preconditions.checkArgument(id >= 0 && id <= 5, "id must be between 0 and 5");
+      return Mode.values()[id];
+    }
+
+    public int toId() {
+      return ordinal();
+    }
   }
 }

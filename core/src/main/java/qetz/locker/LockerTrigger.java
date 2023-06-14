@@ -1,12 +1,11 @@
 package qetz.locker;
 
+import jakarta.inject.Inject;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import javax.inject.Inject;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @Inject)
 public final class LockerTrigger implements Listener {

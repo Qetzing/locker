@@ -8,7 +8,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import qetz.locker.Locker;
 import qetz.locker.Outfit;
 import qetz.locker.component.SingleLook;
@@ -25,10 +24,10 @@ public final class NickCommand implements CommandExecutor {
 
   @Override
   public boolean onCommand(
-    @NotNull CommandSender sender,
-    @NotNull Command command,
-    @NotNull String label,
-    @NotNull String[] options
+    CommandSender sender,
+    Command command,
+    String label,
+    String[] options
   ) {
     if (!(sender instanceof Player)) {
       return false;

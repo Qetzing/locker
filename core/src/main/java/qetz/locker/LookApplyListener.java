@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.google.common.collect.Lists;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -13,7 +14,6 @@ import qetz.locker.packet.WrappedPlayServerPlayerInfo;
 import qetz.locker.packet.WrappedPlayServerScoreboardTeam;
 import qetz.locker.packet.WrappedPlayServerSpawnNamedEntity;
 
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;

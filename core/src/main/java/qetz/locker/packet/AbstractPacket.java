@@ -4,8 +4,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
-
 import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
 
 public abstract class AbstractPacket {
@@ -20,11 +18,7 @@ public abstract class AbstractPacket {
   }
 
   public void sendPacket(Player receiver) {
-    try {
-      getProtocolManager().sendServerPacket(receiver, handle());
-    } catch (InvocationTargetException sendFailure) {
-      throw new RuntimeException(sendFailure);
-    }
+    getProtocolManager().sendServerPacket(receiver, handle());
   }
 
   public void broadcastPacket() {
@@ -32,10 +26,6 @@ public abstract class AbstractPacket {
   }
 
   public void receivePacket(Player sender) {
-    try {
-      getProtocolManager().recieveClientPacket(sender, handle());
-    } catch (IllegalAccessException | InvocationTargetException receivingFailure) {
-      throw new RuntimeException(receivingFailure);
-    }
+    getProtocolManager().receiveClientPacket(sender, handle());
   }
 }
