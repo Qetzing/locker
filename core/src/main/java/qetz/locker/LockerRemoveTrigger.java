@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @Inject)
-public final class LockerTrigger implements Listener {
+public final class LockerRemoveTrigger implements Listener {
   private final PaperLocker locker;
 
   @EventHandler

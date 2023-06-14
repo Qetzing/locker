@@ -148,7 +148,7 @@ public final class WrappedPlayServerScoreboardTeam extends AbstractPacket {
       return Mode.values()[id];
     }
 
-    public int toId() {
+    public int id() {
       return ordinal();
     }
   }

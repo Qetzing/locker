@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNullElse;
+
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Accessors(fluent = true)
 @Getter
@@ -79,6 +81,14 @@ public final class Outfit {
     public static DisplayName emptyWithName(String name) {
       Preconditions.checkNotNull(name, "name");
       return new DisplayName(name, null, null, null);
+    }
+
+    public String formatted() {
+      return "%s%s%s".formatted(
+        requireNonNullElse(prefix, ""),
+        name,
+        requireNonNullElse(suffix, "")
+      );
     }
   }
 

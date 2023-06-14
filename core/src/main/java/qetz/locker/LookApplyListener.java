@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.comphenix.protocol.PacketType.Play.Server.*;
+import static qetz.locker.packet.WrappedPlayServerScoreboardTeam.Mode.*;
 
 public final class LookApplyListener extends PacketAdapter {
   private final PaperLocker locker;
@@ -91,7 +92,11 @@ public final class LookApplyListener extends PacketAdapter {
     return wrapper.handle();
   }
 
-  private static final Set<Integer> updateModes = Set.of(0, 3, 4);
+  private static final Set<Integer> updateModes = Set.of(
+    TeamCreated.id(),
+    PlayersAdded.id(),
+    PlayersRemoved.id()
+  );
 
   private PacketContainer adjustScoreboardTeam(
     PacketContainer packet,
@@ -111,11 +116,11 @@ public final class LookApplyListener extends PacketAdapter {
     Collection<String> edited = Lists.newArrayList();
     for (var name : original) {
       var edit = findPlayerByName(name)
-        .map(player -> locker
-          .findById(player.getUniqueId())
+        .map(player -> locker.findById(player.getUniqueId())
           .orElseThrow()
           .chooseOutfit(receiver)
-          .name()
+          .displayName()
+          .formatted()
         )
         .orElse(name);
       edited.add(edit);

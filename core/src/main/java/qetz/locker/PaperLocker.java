@@ -38,24 +38,6 @@ public final class PaperLocker implements Locker {
     return factory;
   }
 
-  public Look findOrCreateByOriginal(Outfit original) {
-    Preconditions.checkNotNull(original, "original");
-    return findById(original.id())
-      .orElseGet(() -> createByOriginal(original));
-  }
-
-  public Look createByOriginal(Outfit original) {
-    Preconditions.checkNotNull(original, "original");
-    var look = factory().create(original);
-    looks.put(original.id(), look);
-    return look;
-  }
-
-  public void remove(UUID id) {
-    Preconditions.checkNotNull(id, "id");
-    looks.remove(id);
-  }
-
   @Override
   public Optional<Look> findById(UUID id) {
     Preconditions.checkNotNull(id, "id");
@@ -78,5 +60,23 @@ public final class PaperLocker implements Locker {
     for (var player : Bukkit.getOnlinePlayers()) {
       player.showPlayer(plugin, target);
     }
+  }
+
+  Look findOrCreateByOriginal(Outfit original) {
+    Preconditions.checkNotNull(original, "original");
+    return findById(original.id())
+      .orElseGet(() -> createByOriginal(original));
+  }
+
+  private Look createByOriginal(Outfit original) {
+    Preconditions.checkNotNull(original, "original");
+    var look = factory().create(original);
+    looks.put(original.id(), look);
+    return look;
+  }
+
+  void remove(UUID id) {
+    Preconditions.checkNotNull(id, "id");
+    looks.remove(id);
   }
 }
