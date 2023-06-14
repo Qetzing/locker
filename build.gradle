@@ -14,13 +14,13 @@ allprojects {
 }
 
 ext {
-  paperVersion = '1.16.5-R0.1-SNAPSHOT'
-  protocolLibVersion = '4.8.0'
+  paperVersion = '1.12.2-R0.1-SNAPSHOT'
+  protocolLibVersion = '5.0.0'
 
-  guiceVersion = '5.1.0'
-  lombokVersion = '1.18.24'
+  guiceVersion = '7.0.0'
+  lombokVersion = '1.18.28'
 
-  jupiterVersion = '5.8.2'
+  jupiterVersion = '5.9.3'
 }
 
 def registerMinecraftDependencies(dependencies) {
