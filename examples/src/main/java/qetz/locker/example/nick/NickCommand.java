@@ -55,6 +55,6 @@ public final class NickCommand implements CommandExecutor {
     var newLook = !nicked
       ? repository.create(permission, originalOutfit)
       : SingleLook.withOutfit(originalOutfit);
-    locker.changeLook(id, newLook);
+    locker.updateLook(id, newLook);
   }
 }

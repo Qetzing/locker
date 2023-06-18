@@ -7,5 +7,7 @@ public interface Locker {
   void registerFactory(LookFactory factory);
 
   Optional<Look> findById(UUID id);
-  void changeLook(UUID id, Look look);
+
+  void updateLook(UUID id, Look newLook);
+  void refreshLook(UUID id);
 }

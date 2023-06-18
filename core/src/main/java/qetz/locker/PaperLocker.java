@@ -44,11 +44,10 @@ public final class PaperLocker implements Locker {
     return Optional.ofNullable(looks.get(id));
   }
 
-  @SuppressWarnings("ConstantConditions")
   @Override
-  public void changeLook(UUID id, Look look) {
+  public void updateLook(UUID id, Look newLook) {
     Preconditions.checkNotNull(id, "id");
-    Preconditions.checkNotNull(look, "look");
+    Preconditions.checkNotNull(newLook, "newLook");
     if (!looks.containsKey(id)) {
       return;
     }
@@ -56,10 +55,21 @@ public final class PaperLocker implements Locker {
     for (var player : Bukkit.getOnlinePlayers()) {
       player.hidePlayer(plugin, target);
     }
-    looks.put(id, look);
+    looks.put(id, newLook);
     for (var player : Bukkit.getOnlinePlayers()) {
       player.showPlayer(plugin, target);
     }
+  }
+
+  @Override
+  public void refreshLook(UUID id) {
+    Preconditions.checkNotNull(id, "id");
+    if (!looks.containsKey(id)) {
+      return;
+    }
+    var target = Bukkit.getPlayer(id);
+    var original = Outfit.originalOutfit(target);
+    updateLook(id, createByOriginal(original));
   }
 
   Look findOrCreateByOriginal(Outfit original) {
