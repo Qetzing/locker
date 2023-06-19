@@ -19,5 +19,9 @@ dependencies {
 }
 
 shadowJar {
-  relocate 'com.google', 'shaded.com.google'
+  archiveBaseName.set('Locker')
+  archiveClassifier.set('')
+  relocate('com.google', 'shaded.com.google') {
+    exclude 'com.google.common.collect.Multimap'
+  }
 }
