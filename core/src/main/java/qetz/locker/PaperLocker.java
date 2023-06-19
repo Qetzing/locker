@@ -78,7 +78,7 @@ public final class PaperLocker implements Locker {
       .orElseGet(() -> createByOriginal(original));
   }
 
-  private Look createByOriginal(Outfit original) {
+  Look createByOriginal(Outfit original) {
     Preconditions.checkNotNull(original, "original");
     var look = factory().create(original);
     looks.put(original.id(), look);
