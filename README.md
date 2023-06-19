@@ -56,10 +56,10 @@ Afterwards you can add the `api` and if you wish the additional `components`:
 #### Gradle
 
 ```groovy
-compileOnly 'qetz.locker:api:1.1.4'
+compileOnly 'qetz.locker:api:1.1.5'
 
 // Optionally components
-implementation 'qetz.locker:components:1.1.4'
+implementation 'qetz.locker:components:1.1.5'
 ```
 
 #### Maven
@@ -68,7 +68,7 @@ implementation 'qetz.locker:components:1.1.4'
 <dependency>
   <groupId>qetz.locker</groupId>
   <artifactId>api</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
   <scope>compile</scope>
 </dependency>
 
@@ -76,7 +76,7 @@ implementation 'qetz.locker:components:1.1.4'
 <dependency>
   <groupId>qetz.locker</groupId>
   <artifactId>components</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
 </dependency>
 ```
 
