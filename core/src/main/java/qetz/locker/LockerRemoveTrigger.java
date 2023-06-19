@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -11,7 +12,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public final class LockerRemoveTrigger implements Listener {
   private final PaperLocker locker;
 
-  @EventHandler
+  // Through the applied event priority, the player is removed from the Locker
+  // at last, so that other plugins can access him when quitting
+  @EventHandler(priority = EventPriority.HIGHEST)
   private void removeFromLocker(PlayerQuitEvent quit) {
     var player = quit.getPlayer();
 
