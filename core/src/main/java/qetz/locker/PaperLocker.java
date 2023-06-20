@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import qetz.locker.outfit.Outfit;
 
@@ -14,11 +15,16 @@ import java.util.UUID;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PaperLocker implements Locker {
-  static PaperLocker withPlugin(Plugin plugin) {
+  static PaperLocker with(
+    TablistPacketFactory tablistPacketFactory,
+    Plugin plugin
+  ) {
+    Preconditions.checkNotNull(tablistPacketFactory, "tablistPacketFactory");
     Preconditions.checkNotNull(plugin, "plugin");
-    return new PaperLocker(Maps.newHashMap(), plugin);
+    return new PaperLocker(tablistPacketFactory, Maps.newHashMap(), plugin);
   }
 
+  private final TablistPacketFactory tablistPacketFactory;
   private final Map<UUID, Look> looks;
   private final Plugin plugin;
 
@@ -53,13 +59,29 @@ public final class PaperLocker implements Locker {
       return;
     }
     var target = Bukkit.getPlayer(id);
+    hideTarget(target, looks.get(id));
+    looks.put(id, newLook);
+    showTarget(target, newLook);
+  }
+
+  private void hideTarget(Player target, Look oldLook) {
     for (var player : Bukkit.getOnlinePlayers()) {
       player.hidePlayer(plugin, target);
     }
-    looks.put(id, newLook);
+    tablistPacketFactory
+      .withAllAvailableReceivers()
+      .withLook(oldLook)
+      .sendDestroying();
+  }
+
+  private void showTarget(Player target, Look newLook) {
     for (var player : Bukkit.getOnlinePlayers()) {
       player.showPlayer(plugin, target);
     }
+    tablistPacketFactory
+      .withAllAvailableReceivers()
+      .withLook(newLook)
+      .sendCreating();
   }
 
   @Override

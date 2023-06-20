@@ -33,5 +33,6 @@ public final class LockerPlugin extends JavaPlugin {
 
     var pluginManager = Bukkit.getPluginManager();
     pluginManager.registerEvents(injector.getInstance(LockerRegistryTrigger.class), this);
+    pluginManager.registerEvents(injector.getInstance(LookApplyListener.class), this);
   }
 }

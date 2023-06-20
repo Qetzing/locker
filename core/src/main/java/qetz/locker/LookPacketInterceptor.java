@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 import qetz.locker.outfit.Outfit;
 import qetz.locker.packet.WrappedPlayServerPlayerInfo;
 import qetz.locker.packet.WrappedPlayServerScoreboardTeam;
+import qetz.locker.packet.WrappedPlayServerScoreboardTeam.Mode;
 import qetz.locker.packet.WrappedPlayServerSpawnNamedEntity;
 
 import java.util.Collection;
@@ -93,12 +94,13 @@ public final class LookPacketInterceptor extends PacketAdapter {
     return wrapper.handle();
   }
 
-  private static final Set<Integer> updateModes = Set.of(
-    TeamCreated.id(),
-    PlayersAdded.id(),
-    PlayersRemoved.id()
+  private static final Set<Mode> updateModes = Set.of(
+    TeamCreated,
+    PlayersAdded,
+    PlayersRemoved
   );
 
+  // TODO: Required?
   private PacketContainer adjustScoreboardTeam(
     PacketContainer packet,
     Player receiver
