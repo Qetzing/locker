@@ -3,20 +3,20 @@ package qetz.locker;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.base.Preconditions;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNullElse;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
+@ToString
 @Accessors(fluent = true)
 @Getter
 public final class Outfit {
@@ -69,6 +69,29 @@ public final class Outfit {
       Preconditions.checkNotNull(property, "property");
       return new Skin(property.getSignature(), property.getValue());
     }
+
+    @Override
+    public String toString() {
+      return "Skin{signature='%s', value='%s'}".formatted(signature, value);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(signature, value);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+      if (object == this) {
+        return true;
+      }
+      if (!(object instanceof Skin)) {
+        return false;
+      }
+      var skin = (Skin) object;
+      return signature.equals(skin.signature)
+        && value.equals(skin.value);
+    }
   }
 
   @lombok.Builder(builderMethodName = "newBuilder", setterPrefix = "with")
@@ -90,6 +113,36 @@ public final class Outfit {
         requireNonNullElse(suffix, "")
       );
     }
+
+    @Override
+    public String toString() {
+      return "DisplayName{name='%s', prefix='%s', suffix='%s', color='%s'}".formatted(
+        name,
+        prefix,
+        suffix,
+        color
+      );
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(name, prefix, suffix, color);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+      if (object == this) {
+        return true;
+      }
+      if (!(object instanceof DisplayName)) {
+        return false;
+      }
+      var displayName = (DisplayName) object;
+      return name.equals(displayName.name)
+        && Objects.equals(prefix, displayName.prefix)
+        && Objects.equals(suffix, displayName.suffix)
+        && Objects.equals(color, displayName.color);
+    }
   }
 
   @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -104,7 +157,7 @@ public final class Outfit {
         .filter(current -> current.getName().equals(skinKey))
         .findFirst()
         .orElseThrow();
-      return withSkin(Skin.with(property.getValue(), property.getSignature()))
+      return withSkin(Skin.with(property.getSignature(), property.getValue()))
         .withId(player.getUniqueId())
         .withName(player.getName());
     }
