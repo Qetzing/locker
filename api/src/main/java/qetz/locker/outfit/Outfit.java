@@ -15,6 +15,7 @@ import java.util.UUID;
 @Accessors(fluent = true)
 @Getter
 public final class Outfit {
+  private final TablistAppearance tablistAppearance;
   private final DisplayName displayName;
   private final Skin skin;
   private final UUID id;
@@ -41,12 +42,18 @@ public final class Outfit {
 
   public static Outfit originalOutfit(Player player) {
     Preconditions.checkNotNull(player, "player");
-    return newBuilder().originalFromPlayer(player).create();
+    return newBuilder()
+      .originalFromPlayer(player)
+      .withoutTablistAppearance()
+      .create();
   }
 
   public static Outfit fromGameProfile(WrappedGameProfile profile) {
     Preconditions.checkNotNull(profile, "profile");
-    return newBuilder().fromGameProfile(profile).create();
+    return newBuilder()
+      .fromGameProfile(profile)
+      .withoutTablistAppearance()
+      .create();
   }
 
   public static Builder newBuilder() {
@@ -55,6 +62,7 @@ public final class Outfit {
 
   @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
   public static final class Builder {
+    private TablistAppearance tablistAppearance;
     private DisplayName displayName;
     private Skin skin;
     private UUID id;
@@ -82,6 +90,15 @@ public final class Outfit {
         .withId(profile.getUUID());
     }
 
+    public Builder withoutTablistAppearance() {
+      return withTablistAppearance(TablistAppearance.fallback());
+    }
+
+    public Builder withTablistAppearance(TablistAppearance tablistAppearance) {
+      this.tablistAppearance = tablistAppearance;
+      return this;
+    }
+
     public Builder withDisplayName(DisplayName displayName) {
       this.displayName = displayName;
       return this;
@@ -103,10 +120,11 @@ public final class Outfit {
     }
 
     public Outfit create() {
+      Preconditions.checkNotNull(tablistAppearance, "tablistAppearance");
       Preconditions.checkNotNull(displayName, "displayName");
       Preconditions.checkNotNull(skin, "skin");
       Preconditions.checkNotNull(id, "id");
-      return new Outfit(displayName, skin, id);
+      return new Outfit(tablistAppearance, displayName, skin, id);
     }
   }
 }
