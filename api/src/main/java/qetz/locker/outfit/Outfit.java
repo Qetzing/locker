@@ -1,18 +1,13 @@
-package qetz.locker;
+package qetz.locker.outfit;
 
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.base.Preconditions;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.UUID;
-
-import static java.util.Objects.requireNonNullElse;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
@@ -56,93 +51,6 @@ public final class Outfit {
 
   public static Builder newBuilder() {
     return new Builder();
-  }
-
-  public record Skin(String signature, String value) {
-    public static Skin with(String signature, String value) {
-      Preconditions.checkNotNull(signature, "signature");
-      Preconditions.checkNotNull(value, "value");
-      return new Skin(signature, value);
-    }
-
-    public static Skin fromProperty(WrappedSignedProperty property) {
-      Preconditions.checkNotNull(property, "property");
-      return new Skin(property.getSignature(), property.getValue());
-    }
-
-    @Override
-    public String toString() {
-      return "Skin{signature='%s', value='%s'}".formatted(signature, value);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(signature, value);
-    }
-
-    @Override
-    public boolean equals(Object object) {
-      if (object == this) {
-        return true;
-      }
-      if (!(object instanceof Skin)) {
-        return false;
-      }
-      var skin = (Skin) object;
-      return signature.equals(skin.signature)
-        && value.equals(skin.value);
-    }
-  }
-
-  @lombok.Builder(builderMethodName = "newBuilder", setterPrefix = "with")
-  public record DisplayName(
-    @NonNull String name,
-    @Nullable String prefix,
-    @Nullable String suffix,
-    @Nullable ChatColor color
-  ) {
-    public static DisplayName emptyWithName(String name) {
-      Preconditions.checkNotNull(name, "name");
-      return new DisplayName(name, null, null, null);
-    }
-
-    public String formatted() {
-      return "%s%s%s".formatted(
-        requireNonNullElse(prefix, ""),
-        name,
-        requireNonNullElse(suffix, "")
-      );
-    }
-
-    @Override
-    public String toString() {
-      return "DisplayName{name='%s', prefix='%s', suffix='%s', color='%s'}".formatted(
-        name,
-        prefix,
-        suffix,
-        color
-      );
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(name, prefix, suffix, color);
-    }
-
-    @Override
-    public boolean equals(Object object) {
-      if (object == this) {
-        return true;
-      }
-      if (!(object instanceof DisplayName)) {
-        return false;
-      }
-      var displayName = (DisplayName) object;
-      return name.equals(displayName.name)
-        && Objects.equals(prefix, displayName.prefix)
-        && Objects.equals(suffix, displayName.suffix)
-        && Objects.equals(color, displayName.color);
-    }
   }
 
   @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

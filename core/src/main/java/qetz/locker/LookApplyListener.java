@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import qetz.locker.outfit.Outfit;
 import qetz.locker.packet.WrappedPlayServerPlayerInfo;
 import qetz.locker.packet.WrappedPlayServerScoreboardTeam;
 import qetz.locker.packet.WrappedPlayServerSpawnNamedEntity;

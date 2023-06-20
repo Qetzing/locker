@@ -1,5 +1,7 @@
 package qetz.locker;
 
+import qetz.locker.outfit.Outfit;
+
 public interface LookFactory {
   /**
    * Creates a Look for a player by the given {@link Outfit}.

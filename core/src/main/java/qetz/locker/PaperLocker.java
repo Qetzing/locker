@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import qetz.locker.outfit.Outfit;
 
 import java.util.Map;
 import java.util.Optional;

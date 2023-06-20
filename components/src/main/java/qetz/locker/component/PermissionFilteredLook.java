@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import qetz.locker.Look;
-import qetz.locker.Outfit;
+import qetz.locker.outfit.Outfit;
 
 import java.util.LinkedHashMap;
 
