@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import qetz.locker.Locker;
-import qetz.locker.Outfit;
+import qetz.locker.outfit.Outfit;
 import qetz.locker.component.SingleLook;
 
 import java.util.UUID;

@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import qetz.locker.Look;
 import qetz.locker.LookFactory;
-import qetz.locker.Outfit;
+import qetz.locker.outfit.Outfit;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @Inject)
 public final class OriginalLookFactory implements LookFactory {

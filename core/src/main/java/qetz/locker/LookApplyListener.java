@@ -1,134 +1,67 @@
 package qetz.locker;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.google.common.collect.Lists;
-import jakarta.inject.Inject;
+import com.google.inject.Inject;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
-import qetz.locker.packet.WrappedPlayServerPlayerInfo;
-import qetz.locker.packet.WrappedPlayServerScoreboardTeam;
-import qetz.locker.packet.WrappedPlayServerSpawnNamedEntity;
 
 import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.UUID;
 
-import static com.comphenix.protocol.PacketType.Play.Server.*;
-import static qetz.locker.packet.WrappedPlayServerScoreboardTeam.Mode.*;
-
-public final class LookApplyListener extends PacketAdapter {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @Inject)
+public final class LookApplyListener implements Listener {
+  private final TablistPacketFactory tablistPacketFactory;
   private final PaperLocker locker;
+  private final Plugin plugin;
 
-  private static final Set<PacketType> listeningPackets = Set.of(
-    PLAYER_INFO,
-    NAMED_ENTITY_SPAWN,
-    SCOREBOARD_TEAM
-  );
+  @EventHandler
+  private void createTablistEntry(PlayerJoinEvent join) {
+    var target = join.getPlayer();
 
-  @Inject
-  private LookApplyListener(PaperLocker locker, Plugin plugin) {
-    super(plugin, listeningPackets);
-    this.locker = locker;
+    broadcastNewLook(target.getUniqueId());
+    sendExistingLooks(target);
   }
 
-  @Override
-  public void onPacketSending(PacketEvent sending) {
-    if (sending.getPacketType().equals(PLAYER_INFO)) {
-      sending.setPacket(applyLook(
-        sending.getPacket().shallowClone(),
-        sending.getPlayer()
-      ));
-    } else if (sending.getPacketType().equals(NAMED_ENTITY_SPAWN)) {
-      sending.setPacket(reviseSpawnPacket(
-        sending.getPacket().shallowClone(),
-        sending.getPlayer()
-      ));
-    } else if (sending.getPacketType().equals(SCOREBOARD_TEAM)) {
-      sending.setPacket(adjustScoreboardTeam(
-        sending.getPacket().shallowClone(),
-        sending.getPlayer()
-      ));
+  private Collection<Player> onlinePlayersExcept(Player target) {
+    var receivers = Lists.<Player>newArrayList(Bukkit.getOnlinePlayers());
+    receivers.remove(target);
+    return receivers;
+  }
+
+  private void sendExistingLooks(Player target) {
+    var existing = onlinePlayersExcept(target);
+    for (var player : existing) {
+      var look = locker.findById(player.getUniqueId()).orElseThrow();
+      tablistPacketFactory
+        .withReceiver(target)
+        .withLook(look)
+        .sendCreating();
     }
   }
 
-  private PacketContainer applyLook(PacketContainer packet, Player receiver) {
-    var wrapper = WrappedPlayServerPlayerInfo.withPacket(packet);
-    var edited = wrapper.data().stream()
-      .map(original -> createPlayerData(original, receiver))
-      .toList();
-    wrapper.setData(edited);
-    return wrapper.handle();
+  private void broadcastNewLook(UUID targetId) {
+    var look = locker.findById(targetId).orElseThrow();
+    tablistPacketFactory
+      .withAllAvailableReceivers()
+      .withLook(look)
+      .sendCreating();
   }
 
-  private PlayerInfoData createPlayerData(PlayerInfoData original, Player receiver) {
-    var look = locker.findOrCreateByOriginal(
-      Outfit.fromGameProfile(original.getProfile())
-    );
-    var outfit = look.chooseOutfit(receiver);
+  @EventHandler
+  private void deleteTablistEntry(PlayerQuitEvent quit) {
+    var target = quit.getPlayer();
+    var look = locker.findById(target.getUniqueId()).orElseThrow();
 
-    return new PlayerInfoData(
-      outfit.toGameProfile(),
-      original.getLatency(),
-      original.getGameMode(),
-      original.getDisplayName()
-    );
-  }
-
-  private static final String skinKey = "textures";
-
-  private PacketContainer reviseSpawnPacket(
-    PacketContainer packet,
-    Player receiver
-  ) {
-    var wrapper = WrappedPlayServerSpawnNamedEntity.withPacket(packet);
-    var look = locker.findById(wrapper.id()).orElseThrow();
-    var outfit = look.chooseOutfit(receiver);
-    wrapper.setId(outfit.id());
-    return wrapper.handle();
-  }
-
-  private static final Set<Integer> updateModes = Set.of(
-    TeamCreated.id(),
-    PlayersAdded.id(),
-    PlayersRemoved.id()
-  );
-
-  private PacketContainer adjustScoreboardTeam(
-    PacketContainer packet,
-    Player receiver
-  ) {
-    var wrapper = WrappedPlayServerScoreboardTeam.withPacket(packet);
-    if (updateModes.contains(wrapper.mode())) {
-      wrapper.setPlayers(reviseTeamPlayers(wrapper.players(), receiver));
-    }
-    return wrapper.handle();
-  }
-
-  private Collection<String> reviseTeamPlayers(
-    Collection<String> original,
-    Player receiver
-  ) {
-    Collection<String> edited = Lists.newArrayList();
-    for (var name : original) {
-      var edit = findPlayerByName(name)
-        .map(player -> locker.findById(player.getUniqueId())
-          .orElseThrow()
-          .chooseOutfit(receiver)
-          .displayName()
-          .formatted()
-        )
-        .orElse(name);
-      edited.add(edit);
-    }
-    return edited;
-  }
-
-  private Optional<Player> findPlayerByName(String name) {
-    return Optional.ofNullable(Bukkit.getPlayer(name));
+    tablistPacketFactory
+      .withReceivers(onlinePlayersExcept(target))
+      .withLook(look)
+      .sendDestroying();
   }
 }

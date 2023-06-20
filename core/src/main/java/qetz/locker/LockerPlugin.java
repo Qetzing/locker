@@ -29,9 +29,10 @@ public final class LockerPlugin extends JavaPlugin {
   @Override
   public void onEnable() {
     var protocolManager = ProtocolLibrary.getProtocolManager();
-    protocolManager.addPacketListener(injector.getInstance(LookApplyListener.class));
+    protocolManager.addPacketListener(injector.getInstance(LookPacketInterceptor.class));
 
     var pluginManager = Bukkit.getPluginManager();
     pluginManager.registerEvents(injector.getInstance(LockerRegistryTrigger.class), this);
+    pluginManager.registerEvents(injector.getInstance(LookApplyListener.class), this);
   }
 }

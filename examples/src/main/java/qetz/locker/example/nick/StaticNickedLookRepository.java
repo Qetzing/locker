@@ -3,12 +3,12 @@ package qetz.locker.example.nick;
 import com.google.inject.Inject;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import qetz.locker.Outfit;
 import qetz.locker.component.NickedLook;
+import qetz.locker.outfit.Outfit;
 
 import java.util.UUID;
 
-import static qetz.locker.Outfit.Skin.with;
+import static qetz.locker.outfit.Skin.with;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @Inject)
 public final class StaticNickedLookRepository implements NickedLookRepository {
