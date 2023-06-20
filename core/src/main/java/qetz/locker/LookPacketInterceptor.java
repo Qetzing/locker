@@ -22,7 +22,7 @@ import java.util.Set;
 import static com.comphenix.protocol.PacketType.Play.Server.*;
 import static qetz.locker.packet.WrappedPlayServerScoreboardTeam.Mode.*;
 
-public final class LookApplyListener extends PacketAdapter {
+public final class LookPacketInterceptor extends PacketAdapter {
   private final PaperLocker locker;
 
   private static final Set<PacketType> listeningPackets = Set.of(
@@ -32,7 +32,7 @@ public final class LookApplyListener extends PacketAdapter {
   );
 
   @Inject
-  private LookApplyListener(PaperLocker locker, Plugin plugin) {
+  private LookPacketInterceptor(PaperLocker locker, Plugin plugin) {
     super(plugin, listeningPackets);
     this.locker = locker;
   }
