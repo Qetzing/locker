@@ -120,8 +120,7 @@ public final class LookApplyListener extends PacketAdapter {
         .map(player -> locker.findById(player.getUniqueId())
           .orElseThrow()
           .chooseOutfit(receiver)
-          .displayName()
-          .formatted()
+          .name()
         )
         .orElse(name);
       edited.add(edit);
